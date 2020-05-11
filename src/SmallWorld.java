@@ -15,6 +15,7 @@ import java.util.Scanner;
 public class SmallWorld {
 
 	//MEMBER VARIABLES:
+	private String dm = "DUNGEON MASTER:";
 	private String playerName;
 	private HumanPlayer player;
 	private Scanner scanner;
@@ -93,19 +94,15 @@ public class SmallWorld {
 	}//END printIntroBanner() ...............................................
 
 
-	//SET UP A NEW GAME:
-	//this method does the following:
-	// 		a. gets the user's name
-	//		b. gets the user's choice of the character type they will play
-	//		c. builds the game map of locations
-	private void setupGame () {
-		System.out.println("DUNGEON MASTER: What is your name?");
+	//MAKE A NEW PLAYER-CHARACTER:
+	private void makePlayerCharacter () {
+		System.out.println(dm + " What is your name?");
 		playerName = scanner.nextLine();
 		player = new HumanPlayer(playerName);
-		System.out.println("DUNGEON MASTER: " + playerName + ", you have " +
+		System.out.println(dm + " " + playerName + ", you have " +
 				"woken up in a strange Small World, in a beautiful medieval " +
 				"house called Chateau d'" + playerName);
-		System.out.println("DUNGEON MASTER: Now that you are in this strange " +
+		System.out.println(dm + " Now that you are in this strange " +
 				"realm, you will need to choose a new career. You can be one " +
 				"of the following four character types:");
 		brawler.genericDescription();
@@ -121,13 +118,14 @@ public class SmallWorld {
 		System.out.println("Rogue = 3");
 		System.out.println("Saint = 4");
 		do {
-			System.out.println(playerName + ", what career path do you choose?");
+			System.out.println(dm + " " + playerName + ", what career path do" +
+					" you choose?");
 			try {
 				choice = scanner.nextInt();
 				scanner.nextLine();//this clears the newline after nextInt()
 			} catch (InputMismatchException ime1){
 				scanner.nextLine();//this clears the bad input after nextInt()
-				System.out.println("You must enter only a " +
+				System.out.println(dm + " You must enter only a " +
 						"number between 1 and 4:");
 				continue;
 			}
@@ -144,32 +142,37 @@ public class SmallWorld {
 				player.setCharacterType("Saint");
 			}
 			else {
-				System.out.println("Not a valid choice, pick again:");
+				System.out.println(dm + " Not a valid choice, pick again:");
 				continue;
 			}
 			needChoice = false;
 		} while (needChoice);
-		System.out.println("DUNGEON MASTER: Excellent choice, " +
+		System.out.println(dm + " Excellent choice, " +
 				playerName + ", you have chosen wisely. You will " +
-				"now train to become a " + player.getCharacterType());
-		System.out.println(player.getName() + ", you have " +
+				"now train to become a " + player.getCharacterType() + ".");
+		System.out.println(dm + " " + player.getName() + ", you have " +
 				player.getSilver() + " silver coinage to buy supplies with in" +
 				" the shoppe.");
-	}//END setupGame() .....................................................
+	}//END makePlayerCharacter() .....................................................
 
+
+	//MAKE THE GAME MAP OF LOCATIONS:
+	private void makeGameLocations () {
+
+	}//END makeGameLocations() .............................................
 
 	//MAIN METHOD does not use command line arguments:
 	public static void main(String[] args) {
-		//1. make SmallWorld object, which creates instance of all other objects
-		//2. make instances of character-types, items, and locations
-		//3. run intro
-		//4. get user input
-		//5. assign location to each character and item
-		//6. run game turn by turn until player is destroyed or player wins
+		//1. construct SmallWorld object
+		//2. run an intro banner and intro text that describes the game
+		//3. set up the game: get user input to make player-character, then
+		// make the locations, make the other characters, make the items, and
+		// assign everything to its starting location.
+		//4. run the game turn by turn until player is destroyed or player wins
 
 		SmallWorld blastula = new SmallWorld();
 		blastula.printIntroBanner();
-		blastula.setupGame();
+		blastula.makePlayerCharacter();
 	}//END main()
 
 }//END class SmallWorld
