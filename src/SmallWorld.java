@@ -1,70 +1,175 @@
+import characters.*;
+import locations.GenericLocation;
+
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Scanner;
 
 /**
- * 
- * 
- * @author tom
- * 
+ *
+ * @author Jaeren Tredway
+ * This is a workroom for building a Dungeons and Dragons game for the command
+ * line.
  */
 public class SmallWorld {
-	
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// 1: Set up the environment:
 
-		List< Thing > stage = new ArrayList<>();
-		
-		Place room1 = new Place("Classroom","The CS 361 lecture room.");
-		stage.add(room1);
-		Thing chalk = new Thing("Chalk","A piece of chalk.");
-		stage.add(chalk);
-		Thing chair = new Thing("Chair","A chair you can sit on.");
-		stage.add(chair);
-		Thing chair2 = new Thing("Chair","A different chair you can sit on.");
-		stage.add(chair2);
-		Thing chair3 = new Thing("Chair","A third chair you can sit on.");
-		stage.add(chair3);
-		room1.addContent(chalk);
-		room1.addContent(chair);
-		room1.addContent(chair2);
-		room1.addContent(chair3);
-		
-		Looker alice = new Looker("Alice","A generic student.");
-		room1.addContent(alice);
-		stage.add(alice);
-		
-		
-		System.out.println(room1.getDescription());
-//		System.exit(0);
-		
-		List< Actor > players = new ArrayList<>();
-		Looker tom = new Looker("Tom","A nutty professor.");
-	//	tom.setLocation(room1);
-		room1.addContent(tom);
-		stage.add(tom);
-		players.add(tom);
-		players.add(alice);
-		
-		// 2: Simulation loop: in each time step, prompt all the actors to do something fun.		
-		final int endOfTime = 5;		
-		for ( int now = 0; now < endOfTime; now++ ) {
-			System.out.println("Act " + now + ":");
-			System.out.print("Stage contains: ");
-			for (Thing item : stage) {
-				System.out.print(item.getName() + ",");
-			}
-			System.out.println();
-			
-			for ( Actor a : players ) {
-				a.doSomething( );
-			}
-			
-		}
-		
+	//MEMBER VARIABLES:
+	private String playerName;
+	private HumanPlayer player;
+	private Scanner scanner;
+	private Brawler brawler;
+	private Rogue rogue;
+	private Saint saint;
+	private Wizard wizard;
+	private ArrayList<GenericLocation> locationsList;
+	private ArrayList<GenericCharacter> characters;
+
+	//CONSTRUCTOR:
+	private SmallWorld() {
+		this.playerName = "";
+		//this.player = new HumanPlayer(); assign human player in setupGame()
+		this.scanner = new Scanner(System.in);
+		this.brawler = new Brawler();
+		this.rogue = new Rogue();
+		this.saint = new Saint();
+		this.wizard = new Wizard();
+		this.locationsList = new ArrayList<>();
+		this.characters = new ArrayList<>();
 	}
 
-}
+	//*********************MEMBER METHODS SECTION: *************************
+	//PRINT AN INTRO BANNER:
+	//this method prints an ASCII art banner with a brief intro to the game:
+	private void printIntroBanner () {
+		System.out.println(
+"" +
+"   _____ __  ______    __    __       _       ______  ____  __    ____  \n" +
+"  / ___//  |/  /   |  / /   / /      | |     / / __ \\/ __ \\/ /   / __ \\\n" +
+"  \\__ \\/ /|_/ / /| | / /   / /       | | /| / / / / / /_/ / /   / / / / \n" +
+" ___/ / /  / / ___ |/ /___/ /___     | |/ |/ / /_/ / _, _/ /___/ /_/ /  \n" +
+"/____/_/  /_/_/  |_/_____/_____/     |__/|__/\\____/_/ |_/_____/_____/  \n" +
+"																	     \n" +
+"	  	   		    _                __                                  \n" +
+"	    ___  ____  (_)________  ____/ /__     ____  ____  ___  _         \n" +
+"	   / _ \\/ __ \\/ / ___/ __ \\/ __  / _ \\   / __ \\/ __ \\/ _ \\(_) \n" +
+"	  /  __/ /_/ / (__  ) /_/ / /_/ /  __/  / /_/ / / / /  __/           \n" +
+"	  \\___/ .___/_/____/\\____/\\__,_/\\___/   \\____/_/ /_/\\___(_)    \n" +
+"	     /_/                                                             \n" +
+"	   ________            ____                      __         __       \n" +
+"	  /_  __/ /_  ___     / __ \\________  ____ _____/ /__  ____/ /      \n" +
+"	   / / / __ \\/ _ \\   / / / / ___/ _ \\/ __ `/ __  / _ \\/ __  /    \n" +
+"	  / / / / / /  __/  / /_/ / /  /  __/ /_/ / /_/ /  __/ /_/ /         \n" +
+"	 /_/ /_/ /_/\\___/  /_____/_/   \\___/\\__,_/\\__,_/\\___/\\__,_/    \n" +
+"																	     \n" +
+"			   ______                          ____                      \n" +
+"			  / ____/___ __   _____     ____  / __/                      \n" +
+"			 / /   / __ `/ | / / _ \\   / __ \\/ /_                      \n" +
+"			/ /___/ /_/ /| |/ /  __/  / /_/ / __/                        \n" +
+"			\\____/\\__,_/ |___/\\___/   \\____/_/                       \n" +
+"																	     \n" +
+"			   ____  __           __        __                           \n" +
+"			  / __ )/ /___ ______/ /___  __/ /___ _                      \n" +
+"			 / __  / / __ `/ ___/ __/ / / / / __ `/                      \n" +
+"			/ /_/ / / /_/ (__  ) /_/ /_/ / / /_/ /                       \n" +
+"		   /_____/_/\\__,_/____/\\__/\\__,_/_/\\__,_/                    \n" +
+"");
+		System.out.println("Welcome to SMALL WORLD episode one: The Dreaded " +
+				"Cave of Blastula\n");
+			System.out.println("I am your narrator named DUNGEON MASTER, in " +
+				"tribute to the 1970's era game 'Dungeons and Dragons'. I am " +
+				"all-knowing and all-powerful, and I attempt to defeat you. " +
+				"Nevertheless, you can still win if you are clever and " +
+				"persevering.\n");
+		System.out.println("GAME DESCRIPTION:");
+		System.out.println("In this role-playing game you will become a " +
+				"player in a virtual world, and you can travel through the " +
+				"world on an adventure. I will guide you along the way and " +
+				"describe the world to you. The goal of the game is to " +
+				"acquire a treasure called the Easy Button and take it back " +
+				"to your chateau. The Easy Button is a wish-fulfilling " +
+				"device that makes everything easy. The path will be fraught" +
+				" with peril, but the reward is great! ");
+	}//END printIntroBanner() ...............................................
+
+
+	//SET UP A NEW GAME:
+	//this method does the following:
+	// 		a. gets the user's name
+	//		b. gets the user's choice of the character type they will play
+	//		c. builds the game map of locations
+	private void setupGame () {
+		System.out.println("DUNGEON MASTER: What is your name?");
+		playerName = scanner.nextLine();
+		player = new HumanPlayer(playerName);
+		System.out.println("DUNGEON MASTER: " + playerName + ", you have " +
+				"woken up in a strange Small World, in a beautiful medieval " +
+				"house called Chateau d'" + playerName);
+		System.out.println("DUNGEON MASTER: Now that you are in this strange " +
+				"realm, you will need to choose a new career. You can be one " +
+				"of the following four character types:");
+		brawler.genericDescription();
+		wizard.genericDescription();
+		rogue.genericDescription();
+		saint.genericDescription();
+
+		boolean needChoice = true;
+		int choice = 0;
+		System.out.println("Choices:");
+		System.out.println("Brawler = 1");
+		System.out.println("Wizard = 2");
+		System.out.println("Rogue = 3");
+		System.out.println("Saint = 4");
+		do {
+			System.out.println(playerName + ", what career path do you choose?");
+			try {
+				choice = scanner.nextInt();
+				scanner.nextLine();//this clears the newline after nextInt()
+			} catch (InputMismatchException ime1){
+				scanner.nextLine();//this clears the bad input after nextInt()
+				System.out.println("You must enter only a " +
+						"number between 1 and 4:");
+				continue;
+			}
+			if (choice == 1) {
+				player.setCharacterType("Brawler");
+			}
+			else if (choice == 2) {
+				player.setCharacterType("Wizard");
+			}
+			else if (choice == 3) {
+				player.setCharacterType("Rogue");
+			}
+			else if (choice == 4) {
+				player.setCharacterType("Saint");
+			}
+			else {
+				System.out.println("Not a valid choice, pick again:");
+				continue;
+			}
+			needChoice = false;
+		} while (needChoice);
+		System.out.println("DUNGEON MASTER: Excellent choice, " +
+				playerName + ", you have chosen wisely. You will " +
+				"now train to become a " + player.getCharacterType());
+		System.out.println(player.getName() + ", you have " +
+				player.getSilver() + " silver coinage to buy supplies with in" +
+				" the shoppe.");
+	}//END setupGame() .....................................................
+
+
+	//MAIN METHOD does not use command line arguments:
+	public static void main(String[] args) {
+		//1. make SmallWorld object, which creates instance of all other objects
+		//2. make instances of character-types, items, and locations
+		//3. run intro
+		//4. get user input
+		//5. assign location to each character and item
+		//6. run game turn by turn until player is destroyed or player wins
+
+		SmallWorld blastula = new SmallWorld();
+		blastula.printIntroBanner();
+		blastula.setupGame();
+	}//END main()
+
+}//END class SmallWorld
