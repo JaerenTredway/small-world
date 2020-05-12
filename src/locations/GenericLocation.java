@@ -26,7 +26,7 @@ public class GenericLocation {
         this.exits = new HashMap<>();
         this.characters = new ArrayList<>();
         this.items = new ArrayList<>();
-        //set up the HashMap of exits:
+        //set up the HashMap of exits with its keys:
         String[] directions = {"N", "S", "E", "W"};
         for (String key : directions) {
             GenericLocation value = new GenericLocation();
@@ -45,12 +45,14 @@ public class GenericLocation {
         return this.description;
     }
     public GenericLocation getExit (String s) {
-        return exits.get(s);
+        return exits.get(s); //gets the value at that key
     }
+    //get a character by name:
     public GenericCharacter getCharacter (String s) {
         int i = this.characters.indexOf(s);
         return characters.get(i);
     }
+    //get item by name:
     public GenericItem getItem (String s) {
         int i = this.items.indexOf(s);
         return items.get(i);
@@ -59,33 +61,28 @@ public class GenericLocation {
 
 
     //************** SETTERS: **********************************************
-    public void setName () {
-
+    public void setName (String s) {
+        this.name = s;
     }
-    public void setDescription () {
-
+    public void setDescription (String s) {
+        this.description = s;
     }
-    public void setExit () {
-
+    //add a location (value) to a (N S E W) direction (key)
+    public void setExit (String direction, GenericLocation location) {
+        this.exits.put(direction, location);
     }
-    public void setCharacter () {
-
+    //add a character to the list:
+    public void setCharacter (GenericCharacter character) {
+        this.characters.add(character);
     }
-    public void setItem () {
-
+    public void setItem (GenericItem item) {
+        this.items.add(item);
     }
     //************** END SETTERS *******************************************
 
-    //POPULATE HASHMAP OF EXITS WITH KEYS:
-    // this has Strings N S E W as keys, and the values will be the location
-    // that is reached if you go in that direction (the values are added later)
-    public void populateHashMap () {
-        String[] directions = {"N", "S", "E", "W"};
-        for (int i = 0; i < directions.length; i++) {
-            String key = directions[i];
-            GenericLocation value = new GenericLocation();
-            this.exits.put(key, value);
-        }
-    }
+//    @Override
+//    public String toString () {
+//        return
+//    }
 
 }//END class GenericLocation

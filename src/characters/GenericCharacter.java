@@ -49,7 +49,7 @@ public class GenericCharacter {
     public ArrayList getCargo() {
         return cargo;
     }
-    public GenericLocation getCurrentLocationLocation() {
+    public GenericLocation getCurrentLocation() {
         return currentLocation;
     }
     public int getSilver() {
@@ -74,7 +74,7 @@ public class GenericCharacter {
     public void setCargo(ArrayList<GenericItem> cargo) {
         this.cargo = cargo;
     }
-    public void setCurrentLocationLocation(GenericLocation location) {
+    public void setCurrentLocation(GenericLocation location) {
         this.currentLocation = location;
     }
     public void setSilver(int silver) {

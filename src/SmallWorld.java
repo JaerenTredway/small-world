@@ -1,13 +1,11 @@
 import characters.*;
 import locations.GenericLocation;
-
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 /**
- *
  * @author Jaeren Tredway
  * This is a workroom for building a Dungeons and Dragons game for the command
  * line.
@@ -17,6 +15,7 @@ public class SmallWorld {
 	//MEMBER VARIABLES:
 	private String dm = "DUNGEON MASTER:";
 	private String playerName;
+	private String home = "";
 	private HumanPlayer player;
 	private Scanner scanner;
 	private Brawler brawler;
@@ -25,6 +24,15 @@ public class SmallWorld {
 	private Wizard wizard;
 	private ArrayList<GenericLocation> locationsList;
 	private ArrayList<GenericCharacter> characters;
+	private boolean victory = false;
+	private boolean deceased = false;
+	GenericLocation chateau;
+	GenericLocation shoppe;
+	GenericLocation emptyField;
+	GenericLocation caveEntrance;
+	GenericLocation creepyRoom;
+	GenericLocation orcTemple;
+	GenericLocation deadEnd;
 
 	//CONSTRUCTOR:
 	private SmallWorld() {
@@ -99,9 +107,10 @@ public class SmallWorld {
 		System.out.println(dm + " What is your name?");
 		playerName = scanner.nextLine();
 		player = new HumanPlayer(playerName);
-		System.out.println(dm + " " + playerName + ", you have " +
+		home = "Chateau d'" + playerName;
+ 		System.out.println(dm + " " + playerName + ", you have " +
 				"woken up in a strange Small World, in a beautiful medieval " +
-				"house called Chateau d'" + playerName);
+				"house called " + home);
 		System.out.println(dm + " Now that you are in this strange " +
 				"realm, you will need to choose a new career. You can be one " +
 				"of the following four character types:");
@@ -151,15 +160,94 @@ public class SmallWorld {
 				playerName + ", you have chosen wisely. You will " +
 				"now train to become a " + player.getCharacterType() + ".");
 		System.out.println(dm + " " + player.getName() + ", you have " +
-				player.getSilver() + " silver coinage to buy supplies with in" +
+				player.getSilver() + " silver coinage to buy supplies with at" +
 				" the shoppe.");
 	}//END makePlayerCharacter() .....................................................
 
 
 	//MAKE THE GAME MAP OF LOCATIONS:
 	private void makeGameLocations () {
-
+		chateau = new GenericLocation(home, "The lovely " +
+				"medieval home of " + playerName + ", nestled in the " +
+				"Alps-like land of SmallWorld.");
+		shoppe = new GenericLocation("The Shoppe", "Karl " +
+				"Bogenstein's Adventure Shoppe, where you can buy stuff.");
+		emptyField = new GenericLocation("Empty Field", "An " +
+				"empty field that used to be planted with turnips.");
+		caveEntrance = new GenericLocation("Entrance to the " +
+				"Dreaded Cave of Blastula", "A dark opening in the 1000 foot " +
+				"tall rock cliff.");
+		creepyRoom = new GenericLocation("The Creepy Room",
+				"A huge, scary, and dark cave chamber.");
+		orcTemple = new GenericLocation("The Dreaded Orc " +
+				"Temple", "A horrible temple surrounded by bubbling lava");
+		deadEnd = new GenericLocation("A dead end.",
+				"Your path is blocked.");
+		chateau.setExit("N", shoppe);
+		chateau.setExit("S", deadEnd);
+		chateau.setExit("E", deadEnd);
+		chateau.setExit("W", deadEnd);
+		shoppe.setExit("N", emptyField);
+		shoppe.setExit("S", chateau);
+		shoppe.setExit("E", deadEnd);
+		shoppe.setExit("W", deadEnd);
+		emptyField.setExit("N", caveEntrance);
+		emptyField.setExit("S", shoppe);
+		emptyField.setExit("E", deadEnd);
+		emptyField.setExit("W", deadEnd);
+		caveEntrance.setExit("N", creepyRoom);
+		caveEntrance.setExit("S", emptyField);
+		caveEntrance.setExit("E", deadEnd);
+		caveEntrance.setExit("W", deadEnd);
+		creepyRoom.setExit("N", orcTemple);
+		creepyRoom.setExit("S", caveEntrance);
+		creepyRoom.setExit("E", deadEnd);
+		creepyRoom.setExit("W", deadEnd);
+		orcTemple.setExit("N", deadEnd);
+		orcTemple.setExit("S", creepyRoom);
+		orcTemple.setExit("E", deadEnd);
+		orcTemple.setExit("W", deadEnd);
+		//set the player's starting location:
+		player.setCurrentLocation(chateau);
+		chateau.setCharacter(player);
+		System.out.println(playerName + " is in the " + player.getCurrentLocation().getName());
 	}//END makeGameLocations() .............................................
+
+	//PLAY THE GAME TURN-BY-TURN:
+	private void playGame () {
+		String usage = "O = options\n" +
+				"N = move North\n" +
+				"S = move South\n" +
+				"E = move East\n" +
+				"W = move West";
+		System.out.println(dm + " AND SO IT BEGINS. To fulfill your destiny, " +
+				"you must seek out and recover the legendary Easy Button from" +
+				" the Dreaded Cave of Blastula. During any turn, enter the " +
+				"letter O to see your options.");
+		//EACH GAME TURN:
+		do {
+			GenericLocation currentLocation = player.getCurrentLocation();
+			System.out.println(dm + " " + playerName + ", you are in the " +
+					currentLocation.getName());
+			System.out.println(player.getCurrentLocation().getDescription());
+
+			System.out.println(dm + " Enter your action: (O for options)");
+			String action = scanner.nextLine();
+			if (action.equals("O")) {
+				System.out.println(usage);
+			} else if (action.equals("N")) {
+				if (currentLocation.getExit("N").equals(deadEnd)) {
+					System.out.println("You can't go that way.");
+					continue;
+				} else {
+					GenericLocation newLocation = currentLocation.getExit("N");
+					player.setCurrentLocation(newLocation);
+				}
+
+				continue;
+			}
+		} while (victory == false && deceased == false);
+	}//END playGame() ......................................................
 
 	//MAIN METHOD does not use command line arguments:
 	public static void main(String[] args) {
@@ -173,6 +261,9 @@ public class SmallWorld {
 		SmallWorld blastula = new SmallWorld();
 		blastula.printIntroBanner();
 		blastula.makePlayerCharacter();
+		blastula.makeGameLocations();
+		blastula.playGame();
+
 	}//END main()
 
 }//END class SmallWorld
