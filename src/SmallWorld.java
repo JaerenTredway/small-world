@@ -243,9 +243,32 @@ public class SmallWorld {
 					GenericLocation newLocation = currentLocation.getExit("N");
 					player.setCurrentLocation(newLocation);
 				}
-
-				continue;
+			} else if (action.equals("S")) {
+				if (currentLocation.getExit("S").equals(deadEnd)) {
+					System.out.println("You can't go that way.");
+					continue;
+				} else {
+					GenericLocation newLocation = currentLocation.getExit("S");
+					player.setCurrentLocation(newLocation);
+				}
+			} else if (action.equals("E")) {
+				if (currentLocation.getExit("E").equals(deadEnd)) {
+					System.out.println("You can't go that way.");
+					continue;
+				} else {
+					GenericLocation newLocation = currentLocation.getExit("E");
+					player.setCurrentLocation(newLocation);
+				}
+			} else if (action.equals("W")) {
+				if (currentLocation.getExit("W").equals(deadEnd)) {
+					System.out.println("You can't go that way.");
+					continue;
+				} else {
+					GenericLocation newLocation = currentLocation.getExit("W");
+					player.setCurrentLocation(newLocation);
+				}
 			}
+				continue;
 		} while (victory == false && deceased == false);
 	}//END playGame() ......................................................
 
