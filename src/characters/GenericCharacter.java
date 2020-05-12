@@ -7,21 +7,21 @@ import java.util.ArrayList;
 //SUPERCLASS for all the character types:
 public class GenericCharacter {
     //MEMBER VARIABLES: (protected means child classes can use these)
-    protected String name;
-    protected String description; //short desc. of appearance
+    private String name;
+    private String description; //short desc. of appearance
     protected String characterType; //string of the character type
-    protected int hitPoints; //how much damage character can take
-    protected ArrayList<GenericItem> cargo; //the items carried
-    protected GenericLocation currentLocation;
-    protected int silver; //money
+    private int hitPoints; //how much damage character can take
+    private ArrayList<GenericItem> cargo; //the items carried
+    private GenericLocation currentLocation;
+    private int silver; //money
 
     //CONSTRUCTOR: makes a Character object. Used also by child classes:
-    public GenericCharacter(String characterName) {
+    GenericCharacter(String characterName) {
         this.name = characterName; //the particular character's name
         //'characterType' is assigned in each specific character class
         this.description = ""; // the description of a particular char.
         this.characterType = "";
-        this.hitPoints = 50; //FIXME: give different HP to each career type
+        this.hitPoints = 50; //TODO: give different HP to each career type
         this.cargo = new ArrayList<>();
         this.currentLocation = new GenericLocation();
         this.silver = 50;
@@ -29,9 +29,7 @@ public class GenericCharacter {
     }
 
     //no arg constructor:
-    public GenericCharacter () {
-
-    }
+    GenericCharacter() { }
 
     //******************** GETTERS SECTION: ********************************
     public String getName( ) {

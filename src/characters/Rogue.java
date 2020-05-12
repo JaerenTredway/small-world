@@ -2,8 +2,6 @@ package characters;
 
 public class Rogue extends GenericCharacter{
 
-
-
     //CONSTRUCTOR:
     public Rogue () {
         super();

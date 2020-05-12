@@ -2,7 +2,6 @@ package characters;
 
 public class Wizard extends GenericCharacter{
 
-
     //CONSTRUCTOR:
     public Wizard () {
         super();

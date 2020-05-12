@@ -2,14 +2,14 @@ import characters.*;
 import locations.GenericLocation;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 /**
  * @author Jaeren Tredway
- * This is a workroom for building a Dungeons and Dragons game for the command
- * line.
+ * This is a role-playing game in which the player goes on an adventure in a
+ * Small World on a quest to find a magical treasure.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class SmallWorld {
 
 	//MEMBER VARIABLES:
@@ -22,17 +22,15 @@ public class SmallWorld {
 	private Rogue rogue;
 	private Saint saint;
 	private Wizard wizard;
-	private ArrayList<GenericLocation> locationsList;
-	private ArrayList<GenericCharacter> characters;
 	private boolean victory = false;
 	private boolean deceased = false;
-	GenericLocation chateau;
-	GenericLocation shoppe;
-	GenericLocation emptyField;
-	GenericLocation caveEntrance;
-	GenericLocation creepyRoom;
-	GenericLocation orcTemple;
-	GenericLocation deadEnd;
+	private GenericLocation chateau;
+	private GenericLocation shoppe;
+	private GenericLocation emptyField;
+	private GenericLocation caveEntrance;
+	private GenericLocation creepyRoom;
+	private GenericLocation orcTemple;
+	private GenericLocation deadEnd;
 
 	//CONSTRUCTOR:
 	private SmallWorld() {
@@ -43,8 +41,6 @@ public class SmallWorld {
 		this.rogue = new Rogue();
 		this.saint = new Saint();
 		this.wizard = new Wizard();
-		this.locationsList = new ArrayList<>();
-		this.characters = new ArrayList<>();
 	}
 
 	//*********************MEMBER METHODS SECTION: *************************
@@ -120,7 +116,7 @@ public class SmallWorld {
 		saint.genericDescription();
 
 		boolean needChoice = true;
-		int choice = 0;
+		int choice;
 		System.out.println("Choices:");
 		System.out.println("Brawler = 1");
 		System.out.println("Wizard = 2");
@@ -233,42 +229,47 @@ public class SmallWorld {
 
 			System.out.println(dm + " Enter your action: (O for options)");
 			String action = scanner.nextLine();
-			if (action.equals("O")) {
-				System.out.println(usage);
-			} else if (action.equals("N")) {
-				if (currentLocation.getExit("N").equals(deadEnd)) {
-					System.out.println("You can't go that way.");
-					continue;
-				} else {
-					GenericLocation newLocation = currentLocation.getExit("N");
-					player.setCurrentLocation(newLocation);
-				}
-			} else if (action.equals("S")) {
-				if (currentLocation.getExit("S").equals(deadEnd)) {
-					System.out.println("You can't go that way.");
-					continue;
-				} else {
-					GenericLocation newLocation = currentLocation.getExit("S");
-					player.setCurrentLocation(newLocation);
-				}
-			} else if (action.equals("E")) {
-				if (currentLocation.getExit("E").equals(deadEnd)) {
-					System.out.println("You can't go that way.");
-					continue;
-				} else {
-					GenericLocation newLocation = currentLocation.getExit("E");
-					player.setCurrentLocation(newLocation);
-				}
-			} else if (action.equals("W")) {
-				if (currentLocation.getExit("W").equals(deadEnd)) {
-					System.out.println("You can't go that way.");
-					continue;
-				} else {
-					GenericLocation newLocation = currentLocation.getExit("W");
-					player.setCurrentLocation(newLocation);
-				}
-			}
-				continue;
+			switch (action) {
+				case "O":
+					System.out.println(usage);
+					break;
+				case "N":
+					if (currentLocation.getExit("N").equals(deadEnd)) {
+						System.out.println("You can't go that way.");
+
+					} else {
+						GenericLocation newLocation = currentLocation.getExit("N");
+						player.setCurrentLocation(newLocation);
+					}
+					break;
+				case "S":
+					if (currentLocation.getExit("S").equals(deadEnd)) {
+						System.out.println("You can't go that way.");
+
+					} else {
+						GenericLocation newLocation = currentLocation.getExit("S");
+						player.setCurrentLocation(newLocation);
+					}
+					break;
+				case "E":
+					if (currentLocation.getExit("E").equals(deadEnd)) {
+						System.out.println("You can't go that way.");
+
+					} else {
+						GenericLocation newLocation = currentLocation.getExit("E");
+						player.setCurrentLocation(newLocation);
+					}
+					break;
+				case "W":
+					if (currentLocation.getExit("W").equals(deadEnd)) {
+						System.out.println("You can't go that way.");
+
+					} else {
+						GenericLocation newLocation = currentLocation.getExit("W");
+						player.setCurrentLocation(newLocation);
+					}
+					break;
+			}//END switch block
 		} while (victory == false && deceased == false);
 	}//END playGame() ......................................................
 

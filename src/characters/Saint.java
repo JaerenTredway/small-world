@@ -2,11 +2,6 @@ package characters;
 
 public class Saint extends GenericCharacter {
 
-    //CLASS VARIABLES:
-
-    //MEMBER VARIABLES:
-
-
     //CONSTRUCTOR:
     public Saint () {
         super();

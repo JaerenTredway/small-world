@@ -2,8 +2,6 @@ package characters;
 
 public class Monster extends GenericCharacter {
 
-    String title = "Monster";
-
     //CONSTRUCTOR:
     public Monster () {
         super();
@@ -13,5 +11,4 @@ public class Monster extends GenericCharacter {
         System.out.println("Monster: This a generic dungeon beast, evil and " +
                 "dangerous.");
     }
-
 }
