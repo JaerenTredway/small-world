@@ -1,4 +1,6 @@
 import characters.*;
+import com.sun.tools.javah.Gen;
+import items.GenericItem;
 import locations.GenericLocation;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -31,11 +33,18 @@ public class SmallWorld {
 	private GenericLocation creepyRoom;
 	private GenericLocation orcTemple;
 	private GenericLocation deadEnd;
+	private GenericLocation inventory;
+	private GenericLocation trophyCase;
 	private GenericCharacter karl;
 	private GenericCharacter farmer;
 	private GenericCharacter caveSpider;
 	private GenericCharacter orcKing;
 	private ArrayList<GenericCharacter> characterList;
+	private GenericItem coffee;
+	private GenericItem rake;
+	private GenericItem bagOfCoins;
+	private GenericItem theBoutonFacile;
+	private ArrayList<GenericItem> itemList;
 
 
 	//CONSTRUCTOR: *********************************************************
@@ -48,6 +57,11 @@ public class SmallWorld {
 		this.saint = new Saint();
 		this.wizard = new Wizard();
 		this.characterList = new ArrayList<>();
+		this.itemList = new ArrayList<>();
+		this.inventory = new GenericLocation(); //this stores the player's loot
+		//place Bouton-Facile here to win:
+		this.trophyCase = new GenericLocation();
+
 	}
 
 	//*********************MEMBER METHODS SECTION: *************************
@@ -219,12 +233,6 @@ public class SmallWorld {
 	}//END makeGameLocations() .............................................
 
 
-	//MAKE ITEMS FOUND IN THE WORLD:
-	private void makeItems () {
-
-	}//END makeItems() ....................................................
-
-
 	//MAKE OTHER CHARACTERS:
 	private void makeCharacters() {
 		karl = new GenericCharacter("Karl Bogenstein",
@@ -238,7 +246,7 @@ public class SmallWorld {
 						"dangling from his web");
 		orcKing = new GenericCharacter("Prezio-Dontrum",
 				"the Infamous and Dreaded Orc King, with orange " +
-						"skin and swooping coiffure of blonde hair");
+						"skin and swooping coiffure of yellow hair");
 		karl.setCurrentLocation(shoppe);
 		characterList.add(karl);
 		farmer.setCurrentLocation(emptyField);
@@ -250,36 +258,74 @@ public class SmallWorld {
 	}//END makeCharacters() ...............................................
 
 
+	//MAKE ITEMS FOUND IN THE WORLD:
+	private void makeItems () {
+		coffee = new GenericItem("Cup of Joe",
+				" a steaming cup of aromatic coffee");
+		rake = new GenericItem("Garden Rake",
+				" an old but sturdy garden tool");
+		bagOfCoins = new GenericItem("Treasure",
+				" a cloth bag with 25 silver coins in it");
+		theBoutonFacile = new GenericItem("The Bouton-Facile",
+				" the magical treasure of legend, that makes " +
+						"everything easy");
+		coffee.setCurrentLocation(shoppe);
+		itemList.add(coffee);
+		rake.setCurrentLocation(emptyField);
+		itemList.add(rake);
+		bagOfCoins.setCurrentLocation(creepyRoom);
+		itemList.add(bagOfCoins);
+		theBoutonFacile.setCurrentLocation(orcTemple);
+		itemList.add(theBoutonFacile);
+	}//END makeItems() ....................................................
+
+
 	//PLAY THE GAME TURN-BY-TURN:
 	private void playGame () {
 		String usage = "O = options\n" +
 				"N = move North\n" +
 				"S = move South\n" +
 				"E = move East\n" +
-				"W = move West";
+				"W = move West\n" +
+				"HOLLER = to yell\n" +
+				"P = pick up item\n" +
+				"V = view your inventory\n" +
+				"T = place Bouton-Facile into trophy case";
 		System.out.println(dm + " AND SO IT BEGINS. To fulfill your destiny, " +
 				"you must seek out and recover the legendary Bouton-Facile " +
 				"from the Dreaded Cave of Blastula. During any turn, enter " +
 				"the letter O to see your options.");
 		//EACH GAME TURN:
 		do {
+			//describe current location:::::::::::::::::::::::::::::::::::::::
 			GenericLocation currentLocation = player.getCurrentLocation();
 			System.out.println("\n" + dm + " " + playerName + ", you are in " +
                     "the " + currentLocation.getName());
 			System.out.println(player.getCurrentLocation().getDescription());
+			//describe characters present at current location:::::::::::::::::
 			for (GenericCharacter character : characterList) {
 				if (character.getCurrentLocation().equals(currentLocation)) {
 					System.out.println(
 							character.getDescription() + ", is here.");
 				}
 			}
+			//describe items present at current location::::::::::::::::::::::
+			for (GenericItem item : itemList) {
+				if (item.getCurrentLocation().equals(currentLocation)) {
+					System.out.println(
+							item.getDescription() + ", is here.");
+				}
+			}
+			//process player's choice of action:::::::::::::::::::::::::::::::
 			System.out.println(dm + " Enter your action: (O for options)");
-			String action = scanner.nextLine();
+			String action = scanner.nextLine().toUpperCase();
 			switch (action) {
 				case "O":
+					System.out.println("Action: Available commands:");
 					System.out.println(usage);
 					break;
 				case "N":
+					System.out.println("Action: Go North:");
 					if (currentLocation.getExit("N").equals(deadEnd)) {
 						System.out.println("You can't go that way.");
 
@@ -289,6 +335,7 @@ public class SmallWorld {
 					}
 					break;
 				case "S":
+					System.out.println("Action: Go South:");
 					if (currentLocation.getExit("S").equals(deadEnd)) {
 						System.out.println("You can't go that way.");
 
@@ -298,6 +345,7 @@ public class SmallWorld {
 					}
 					break;
 				case "E":
+					System.out.println("Action: Go East:");
 					if (currentLocation.getExit("E").equals(deadEnd)) {
 						System.out.println("You can't go that way.");
 
@@ -307,6 +355,7 @@ public class SmallWorld {
 					}
 					break;
 				case "W":
+					System.out.println("Action: Go West:");
 					if (currentLocation.getExit("W").equals(deadEnd)) {
 						System.out.println("You can't go that way.");
 
@@ -315,8 +364,60 @@ public class SmallWorld {
 						player.setCurrentLocation(newLocation);
 					}
 					break;
+				case "HOLLER" :
+					System.out.println("YEEEEEEEEEEE-HAAAAAAAAAAAAAAAW!!");
+					break;
+				case "P" :
+					System.out.println("Action: Pick up item:");
+					boolean noItem = true;
+					for (GenericItem item : itemList) {
+						if (item.getCurrentLocation().equals(currentLocation)) {
+							System.out.println("You picked up the " +
+									item.getName());
+							item.setCurrentLocation(inventory);
+							noItem = false;
+						}
+					}
+					if (noItem) {
+						System.out.println("There is nothing to pick up here.");
+					}
+					break;
+				case "V" :
+					System.out.println("Action: View inventory:");
+					boolean empty = true;
+					System.out.println("Your inventory contains: ");
+					for (GenericItem item : itemList) {
+						if (item.getCurrentLocation().equals(inventory)) {
+							System.out.println(item.getName());
+							empty = false;
+						}
+					}
+					if (empty) {
+						System.out.println("nothing");
+					}
+					break;
+				case "T" :
+					System.out.println("Action: Place treasure in trophy " +
+							"case:");
+					if ( (player.getCurrentLocation().equals(chateau)) &&
+						(theBoutonFacile.getCurrentLocation().equals(inventory)) ) {
+							System.out.println("You placed the " +
+									theBoutonFacile.getName() + " into your" +
+									" trophy case.");
+							victory = true;
+					} else {
+						System.out.println("You must acquire the " +
+								theBoutonFacile.getName() + " first, and take" +
+								" it to " + home + ", in order to place in " +
+								"your trophy case and achieve victory.");
+					}
+					break;
 			}//END switch block
-		} while (victory == false && deceased == false);
+		} while (!victory);
+		//victory message:
+		System.out.println("\n*********************************************");
+		System.out.println(dm + playerName + ", you have achieved greatness " +
+				"and completed the quest, you are VICTORIOUS!");
 	}//END playGame() ......................................................
 
 	//MAIN METHOD does not use command line arguments:
@@ -326,13 +427,14 @@ public class SmallWorld {
 		//3. set up the game: get user input to make player-character, then
 		// make the locations, make the other characters, make the items, and
 		// assign everything to its starting location.
-		//4. run the game turn by turn until player is destroyed or player wins
+		//4. run the game turn by turn until player wins
 
 		SmallWorld blastula = new SmallWorld();
 		blastula.printIntroBanner();
 		blastula.makePlayerCharacter();
 		blastula.makeGameLocations();
 		blastula.makeCharacters();
+		blastula.makeItems();
 		blastula.playGame();
 
 	}//END main()

@@ -1,17 +1,21 @@
 package items;
 
+import locations.GenericLocation;
+
 //This is the super-class that other items are extended from:
 public class GenericItem {
 
 	//MEMBER VARIABLES: (protected means child classes can use these)
 	private String name;
 	private String description;
-	//Place location;
+	private GenericLocation currentLocation;
+
 
 	//CONSTRUCTOR: makes an Item object. Used also by child classes:
 	public GenericItem(String name, String description ) {
 		this.name = name;
 		this.description = description;
+		this.currentLocation = new GenericLocation();
 		System.out.println("Created a " + name);
 	}
 
@@ -25,17 +29,17 @@ public class GenericItem {
 		return name;
 	}
 
-//	//GETTER to access location variable:
-//	public GenericLocation getLocation( ) {
-//		return location;
-//	}
-//
-//	//SETTER to set location variable:
-//	public void setLocation(GenericLocation p) {
-//		location = p;
-//	}
+	//GETTER to access location variable:
+	public GenericLocation getCurrentLocation( ) {
+		return currentLocation;
+	}
 
-	//*********OTHER METHODS FROM DEMO:******************
+	//SETTER to set location variable:
+	public void setCurrentLocation(GenericLocation location) {
+		this.currentLocation = location;
+	}
+
+	//*********OTHER METHODS FROM CLASS DEMO:******************
 //	//this checks if 'contents' ArrayList already has an item before adding it:
 //	public void addContent( Thing t ) {
 //		if (!contents.contains(t))   // short for a loop.

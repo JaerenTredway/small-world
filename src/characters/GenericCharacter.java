@@ -69,8 +69,8 @@ public class GenericCharacter {
     public void setHitPoints(int hitPoints) {
         this.hitPoints = hitPoints;
     }
-    public void setCargo(ArrayList<GenericItem> cargo) {
-        this.cargo = cargo;
+    public void setCargo(GenericItem item) {
+        this.cargo.add(item);
     }
     public void setCurrentLocation(GenericLocation location) {
         this.currentLocation = location;
