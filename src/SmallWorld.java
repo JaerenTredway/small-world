@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class SmallWorld {
 
 	//MEMBER VARIABLES:
-	private String dm = "DUNGEON MASTER:";
+	private String dm = "Maître du Donjon:";
 	private String playerName;
 	private String home = "";
 	private HumanPlayer player;
@@ -31,8 +31,14 @@ public class SmallWorld {
 	private GenericLocation creepyRoom;
 	private GenericLocation orcTemple;
 	private GenericLocation deadEnd;
+	private GenericCharacter karl;
+	private GenericCharacter farmer;
+	private GenericCharacter caveSpider;
+	private GenericCharacter orcKing;
+	private ArrayList<GenericCharacter> characterList;
 
-	//CONSTRUCTOR:
+
+	//CONSTRUCTOR: *********************************************************
 	private SmallWorld() {
 		this.playerName = "";
 		//this.player = new HumanPlayer(); assign human player in setupGame()
@@ -41,6 +47,7 @@ public class SmallWorld {
 		this.rogue = new Rogue();
 		this.saint = new Saint();
 		this.wizard = new Wizard();
+		this.characterList = new ArrayList<>();
 	}
 
 	//*********************MEMBER METHODS SECTION: *************************
@@ -81,18 +88,18 @@ public class SmallWorld {
 "");
 		System.out.println("Welcome to SMALL WORLD episode one: The Dreaded " +
 				"Cave of Blastula\n");
-			System.out.println("I am your narrator named DUNGEON MASTER, in " +
-				"tribute to the 1970's era game 'Dungeons and Dragons'. I am " +
-				"all-knowing and all-powerful, and I attempt to defeat you. " +
-				"Nevertheless, you can still win if you are clever and " +
+			System.out.println("I am your narrator named Maître du Donjon," +
+				" in tribute to the 1970's era game 'Dungeons and Dragons'. " +
+				"I am all-knowing and all-powerful, and I attempt to defeat " +
+				"you. Nevertheless, you can still win if you are clever and " +
 				"persevering.\n");
 		System.out.println("GAME DESCRIPTION:");
 		System.out.println("In this role-playing game you will become a " +
 				"player in a virtual world, and you can travel through the " +
 				"world on an adventure. I will guide you along the way and " +
 				"describe the world to you. The goal of the game is to " +
-				"acquire a treasure called the Easy Button and take it back " +
-				"to your chateau. The Easy Button is a wish-fulfilling " +
+				"acquire a treasure called the Bouton-Facile and take it back" +
+				" to your chateau. The Bouton-Facile is a wish-fulfilling " +
 				"device that makes everything easy. The path will be fraught" +
 				" with peril, but the reward is great! ");
 	}//END printIntroBanner() ...............................................
@@ -103,10 +110,10 @@ public class SmallWorld {
 		System.out.println(dm + " What is your name?");
 		playerName = scanner.nextLine();
 		player = new HumanPlayer(playerName);
-		home = "Chateau d'" + playerName;
- 		System.out.println(dm + " " + playerName + ", you have " +
-				"woken up in a strange Small World, in a beautiful medieval " +
-				"house called " + home);
+		home = "Chateau d'" + playerName + " l'Aventurier";
+ 		System.out.println(dm + " Welcome " + playerName + "! It seems that " +
+				"you have woken up in a strange Small World, in a beautiful " +
+				"medieval house called " + home + "\n");
 		System.out.println(dm + " Now that you are in this strange " +
 				"realm, you will need to choose a new career. You can be one " +
 				"of the following four character types:");
@@ -134,22 +141,23 @@ public class SmallWorld {
 						"number between 1 and 4:");
 				continue;
 			}
-			if (choice == 1) {
-				player.setCharacterType("Brawler");
-			}
-			else if (choice == 2) {
-				player.setCharacterType("Wizard");
-			}
-			else if (choice == 3) {
-				player.setCharacterType("Rogue");
-			}
-			else if (choice == 4) {
-				player.setCharacterType("Saint");
-			}
-			else {
-				System.out.println(dm + " Not a valid choice, pick again:");
-				continue;
-			}
+			switch (choice) {
+				case 1 :
+					player.setCharacterType("Brawler");
+					break;
+				case 2 :
+					player.setCharacterType("Wizard");
+					break;
+				case 3 :
+					player.setCharacterType("Rogue");
+					break;
+				case 4:
+					player.setCharacterType("Saint");
+					break;
+				default:
+					System.out.println(dm + " Not a valid choice, pick again:");
+					continue;
+			}//END switch
 			needChoice = false;
 		} while (needChoice);
 		System.out.println(dm + " Excellent choice, " +
@@ -158,7 +166,7 @@ public class SmallWorld {
 		System.out.println(dm + " " + player.getName() + ", you have " +
 				player.getSilver() + " silver coinage to buy supplies with at" +
 				" the shoppe.");
-	}//END makePlayerCharacter() .....................................................
+	}//END makePlayerCharacter() ...........................................
 
 
 	//MAKE THE GAME MAP OF LOCATIONS:
@@ -171,12 +179,13 @@ public class SmallWorld {
 		emptyField = new GenericLocation("Empty Field", "An " +
 				"empty field that used to be planted with turnips.");
 		caveEntrance = new GenericLocation("Entrance to the " +
-				"Dreaded Cave of Blastula", "A dark opening in the 1000 foot " +
-				"tall rock cliff.");
+				"Dreaded Cave of Blastula", "A dark opening in the " +
+                "1000 foot tall rock cliff.");
 		creepyRoom = new GenericLocation("The Creepy Room",
 				"A huge, scary, and dark cave chamber.");
 		orcTemple = new GenericLocation("The Dreaded Orc " +
-				"Temple", "A horrible temple surrounded by bubbling lava");
+				"Temple", "A horrible temple surrounded by " +
+                "bubbling lava");
 		deadEnd = new GenericLocation("A dead end.",
 				"Your path is blocked.");
 		chateau.setExit("N", shoppe);
@@ -209,6 +218,38 @@ public class SmallWorld {
 		System.out.println(playerName + " is in the " + player.getCurrentLocation().getName());
 	}//END makeGameLocations() .............................................
 
+
+	//MAKE ITEMS FOUND IN THE WORLD:
+	private void makeItems () {
+
+	}//END makeItems() ....................................................
+
+
+	//MAKE OTHER CHARACTERS:
+	private void makeCharacters() {
+		karl = new GenericCharacter("Karl Bogenstein",
+				"the portly and friendly owner of The Adventure " +
+						"Shoppe, with a Bronx accent");
+		farmer = new GenericCharacter("Billy the Farmer",
+				"a rugged and earthy turnip farmer with a rainbow " +
+						"colored shirt and matted hair");
+		caveSpider = new GenericCharacter("Blastadang",
+				"a dangerous and huge glistening black spider, " +
+						"dangling from his web");
+		orcKing = new GenericCharacter("Prezio-Dontrum",
+				"the Infamous and Dreaded Orc King, with orange " +
+						"skin and swooping coiffure of blonde hair");
+		karl.setCurrentLocation(shoppe);
+		characterList.add(karl);
+		farmer.setCurrentLocation(emptyField);
+		characterList.add(farmer);
+		caveSpider.setCurrentLocation(creepyRoom);
+		characterList.add(caveSpider);
+		orcKing.setCurrentLocation(orcTemple);
+		characterList.add(orcKing);
+	}//END makeCharacters() ...............................................
+
+
 	//PLAY THE GAME TURN-BY-TURN:
 	private void playGame () {
 		String usage = "O = options\n" +
@@ -217,16 +258,21 @@ public class SmallWorld {
 				"E = move East\n" +
 				"W = move West";
 		System.out.println(dm + " AND SO IT BEGINS. To fulfill your destiny, " +
-				"you must seek out and recover the legendary Easy Button from" +
-				" the Dreaded Cave of Blastula. During any turn, enter the " +
-				"letter O to see your options.");
+				"you must seek out and recover the legendary Bouton-Facile " +
+				"from the Dreaded Cave of Blastula. During any turn, enter " +
+				"the letter O to see your options.");
 		//EACH GAME TURN:
 		do {
 			GenericLocation currentLocation = player.getCurrentLocation();
-			System.out.println(dm + " " + playerName + ", you are in the " +
-					currentLocation.getName());
+			System.out.println("\n" + dm + " " + playerName + ", you are in " +
+                    "the " + currentLocation.getName());
 			System.out.println(player.getCurrentLocation().getDescription());
-
+			for (GenericCharacter character : characterList) {
+				if (character.getCurrentLocation().equals(currentLocation)) {
+					System.out.println(
+							character.getDescription() + ", is here.");
+				}
+			}
 			System.out.println(dm + " Enter your action: (O for options)");
 			String action = scanner.nextLine();
 			switch (action) {
@@ -286,6 +332,7 @@ public class SmallWorld {
 		blastula.printIntroBanner();
 		blastula.makePlayerCharacter();
 		blastula.makeGameLocations();
+		blastula.makeCharacters();
 		blastula.playGame();
 
 	}//END main()

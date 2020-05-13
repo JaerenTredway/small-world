@@ -16,12 +16,12 @@ public class GenericCharacter {
     private int silver; //money
 
     //CONSTRUCTOR: makes a Character object. Used also by child classes:
-    GenericCharacter(String characterName) {
+    public GenericCharacter(String characterName, String description) {
         this.name = characterName; //the particular character's name
         //'characterType' is assigned in each specific character class
-        this.description = ""; // the description of a particular char.
+        this.description = description; // the description of a particular char.
         this.characterType = "";
-        this.hitPoints = 50; //TODO: give different HP to each career type
+        this.hitPoints = 50;
         this.cargo = new ArrayList<>();
         this.currentLocation = new GenericLocation();
         this.silver = 50;

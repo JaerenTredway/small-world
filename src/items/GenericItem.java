@@ -4,11 +4,11 @@ package items;
 public class GenericItem {
 
 	//MEMBER VARIABLES: (protected means child classes can use these)
-	String name;
-	String description;
+	private String name;
+	private String description;
 	//Place location;
 
-	//CONSTRUCTOR: makes a Thing object. Used also by child classes:
+	//CONSTRUCTOR: makes an Item object. Used also by child classes:
 	public GenericItem(String name, String description ) {
 		this.name = name;
 		this.description = description;
@@ -26,12 +26,12 @@ public class GenericItem {
 	}
 
 //	//GETTER to access location variable:
-//	public Place getLocation( ) {
+//	public GenericLocation getLocation( ) {
 //		return location;
 //	}
 //
 //	//SETTER to set location variable:
-//	public void setLocation(Place p) {
+//	public void setLocation(GenericLocation p) {
 //		location = p;
 //	}
 
